@@ -1,0 +1,75 @@
+/**
+ * Name: Darryl Chan
+ * Matric. No: A0177482U
+ */
+import java.util.*;
+public class Macarons {
+
+    int d;
+    int n;
+    int[] arrMacarons;
+    int[] arrRemainder;
+    int[] arrCountRemainder;
+    
+    public Macarons(int rem, int[] arr, int length){
+        arrMacarons = arr;
+        d = rem;
+        n = length;
+
+    }
+
+    public void countRemainder(){
+        arrMacarons[0] %= d;
+        for (int i = 1; i < n; i++){
+            arrMacarons[i] = (arrMacarons[i]%d + arrMacarons[i-1]%d)%d;
+        }
+        //System.out.println("remainder in the arrays: ");
+        //System.out.println(Arrays.toString(arrMacarons));
+    }
+
+    public void countArray(){
+        int[] arrCountTotalRemainder = new int[d];
+        for (int i = 0; i<n; i++){
+            int remainder = arrMacarons[i];
+            arrCountTotalRemainder[remainder]++;
+        }
+        
+        arrCountTotalRemainder[0]++;//Special case, because 0 remainder can be counted on its own
+
+        int sum = 0;
+        //System.out.println("arr total remainder" + Arrays.toString(arrCountTotalRemainder));
+        for (int j = 0; j < d; j++){
+            //System.out.println("sum: " + sumToN(arrCountTotalRemainder[j]));
+            sum += sumToN(arrCountTotalRemainder[j]);
+        }
+        System.out.println(sum);
+    }
+
+
+    public static int sumToN(int n){
+        if ( n % 2 == 1){
+            return (n/2)*(n);
+        }
+        else{
+            return (n/2)*(n-1);
+        }
+    }
+
+  public static void main(String args[]) {
+    Kattio io = new Kattio(System.in, System.out);
+    
+    int n = io.getInt();
+    int d = io.getInt();
+    int[] arrMacarons = new int[n];
+    for (int i = 0;i<n;i++){
+        arrMacarons[i] = io.getInt();
+    }
+    
+    Macarons tomMacarons = new Macarons(d, arrMacarons, n);
+    tomMacarons.countRemainder();
+    tomMacarons.countArray();
+    
+    //System.out.println("sum 3 " + sumToN(3));
+
+  }
+}

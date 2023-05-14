@@ -1,0 +1,145 @@
+/**
+ * Name: Darryl Chan
+ * Matric. No: A0177482U
+ */
+
+import java.util.*;
+public class Constellations {
+
+    public static long LARGE = (long) (Math.pow(10,9) + 7);
+    public static int[] primeArr = {2,3,5,7,11,13};
+    
+    public static long factorial(int n){
+        if (n == 0){return 1;}
+        else{return n*factorial(n-1);}
+    }
+
+    public static long perm(int n,int k){
+        if (n < k ) {return 1;}
+        else if (n == k){return n;}
+        else{
+            return (n * perm(n-1,k));
+        }
+    }
+
+    public static long choose1(int n, int k){
+        if (k > n) {return 0;}
+        else{
+            int largeNum = Math.max(k, n-k);
+            int smallNum = Math.min(k, n-k);
+            return (perm(n,largeNum+1)/factorial(smallNum))%LARGE;
+            //return(factorial(n)/ ( factorial(k)*factorial(n-k)));
+        }
+    }
+    
+    public static long choose(int n, int k){
+        if (k>n){return 0;}
+        else{
+            k = Math.min(k, n-k);
+            long product = 1;
+            for (int i = 0; i < k; i++){
+                product *= (n-i);
+                product /= (i+1);
+            }
+            return product%LARGE;
+        }
+    }
+
+    public static long omg(int depth, long prime){
+        return (factorial(depth) / parsePrime(prime))%LARGE;
+    }
+
+    public static long parsePrime(long num){
+        long mult = 1;
+        for (int i = 0; i <6; i++){
+            int counter = 0;
+            while(num % primeArr[i] == 0){
+                counter++;
+                num/= primeArr[i];
+            }
+            mult *= factorial(counter);
+        }
+        return mult;
+    }
+
+    public static long choose2(int n, int k){
+        if (k > n){return 0;}
+        else if (k == n || k == 0){return 1;}
+        else{
+            return choose(n-1,k-1)%LARGE + choose(n-1,k)%LARGE;
+        }
+    }
+
+    public static long hun(int numStars, int lowLim, int uppLim){
+        if( numStars < lowLim){return 0;}
+        
+        else{
+            //int[] arr = {0,0,0,0,0,0};
+            return bla(numStars, lowLim, uppLim, 0, 1, 1);
+        }
+    }
+    
+    public static long bla(int numStars, int lowLim, int uppLim, int depth, long add, long prime){
+        //System.out.println("stars: " + numStars + " depth: " +depth + " add: " + add + " prime: " + prime);
+        if(numStars < lowLim){
+            //System.out.println("stars: " + numStars + " depth: " +depth + " add: " + add);
+            //System.out.println("parseprime: " + parsePrime(prime));
+            long mult = omg(depth, prime);
+            //System.out.println("factorial:  " + depth +    " parseprime: " + parsePrime(prime));
+            //long sum = add * factorial(depth);
+            //for(int i = 0; i < 6; i++){
+                //mult /= factorial(arr[i]);
+            //}
+            long sum = (add%LARGE)*(mult%LARGE) ;
+            //System.out.println(sum%LARGE);
+            return sum%LARGE;
+        }
+        else{
+            uppLim = Math.min(numStars,uppLim);
+            long sum = 0;
+            for(int i = uppLim; i>= lowLim; i--){
+                long combination = choose(numStars,i) % LARGE;
+                sum += (bla(numStars-i, lowLim, i, depth+1, (add * combination)%LARGE , prime*primeArr[i-lowLim] ))%LARGE;
+            }
+            return sum%LARGE;
+        }
+    }
+    
+    
+  public static void main(String args[]) {
+    Kattio io = new Kattio(System.in, System.out);
+    int stars = io.getInt();
+    int lowLim = io.getInt();
+    int uppLim = io.getInt();
+    //System.out.println(choose(50,25));
+    //System.out.println("permute: " + perm(50,22));
+    //System.out.println("50 13 18: " + hun(50,13,18));
+    //System.out.println("45 15 20: " + hun(45,15,20));
+
+    //System.out.println(choose(50,18));
+    /*
+    System.out.println("30 " + parsePrime(30));
+    System.out.println("choose" + choose(45,15));
+    System.out.println(LARGE);
+    System.out.println("choose(45,15): " + choose(45,15));
+    System.out.println("fact45: " +factorial(45));
+    System.out.println("fact15: " +factorial(15));
+    System.out.println("fact30: " +factorial(30));
+    System.out.println("perm 45 30: " + perm(45,30));
+    System.out.println("choose(45,15): " + (factorial(45)/(factorial(30)*factorial(15))));
+    System.out.println("45 10 15: " + hun(45,10,15));
+    System.out.println("fact: " +factorial(45));
+    */
+    System.out.println(hun(stars,lowLim,uppLim));
+    /*
+    System.out.println(hun(9,2,3));
+    System.out.println("727: " +hun(7,2,7));
+    System.out.println("313: " +hun(3,1,3));
+    System.out.println("767: " +hun(7,6,7));
+    System.out.println("212: " +hun(2,1,2));
+    System.out.println("977: " +hun(9,7,7));//36
+    System.out.println("736: " +hun(7,3,6));
+    System.out.println("424: " +hun(4,2,4));
+   */
+  }
+}

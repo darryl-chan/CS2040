@@ -1,0 +1,21 @@
+20
+pfront -4
+cal
+dback
+pback 10
+get 1
+pback 10
+dback
+pfront -8
+cal
+cal
+pfront -9
+pback 9
+get 1
+pback 1
+pback 8
+get 2
+cal
+get 6
+pfront -5
+cal

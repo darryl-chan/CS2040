@@ -1,0 +1,11 @@
+3 10
+join 9
+join 14
+join 2
+join 3
+serve
+serve
+serve
+move 2
+join 0
+join 1

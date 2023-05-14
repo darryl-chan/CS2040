@@ -1,0 +1,128 @@
+/**
+ * Name: Darryl Chan
+ * Matric. No: A0177482U
+ */
+
+import java.util.*;
+public class Deliveries {
+
+    PriorityQueue<OrderInPq> pQ = new PriorityQueue<OrderInPq>();
+    ArrayList<Order> arr = new ArrayList<Order>();
+    Stack<Order> stack = new Stack<Order>();
+
+    //Object to put in the priority queue
+    public class OrderInPq implements Comparable <OrderInPq>{
+        int cost;
+
+        public OrderInPq(int c){
+            cost = c;
+        }
+
+        // PreCon: OrderInPq Object, the higher the cost the higher priority
+        @Override
+        public int compareTo(OrderInPq o){
+            if(cost > o.cost){return -1;}
+            else if(cost < o.cost){return 1;}
+            else{return 0;}
+        }
+    }
+
+    //Object to put in arraylist and then sorted afterwards
+    public class Order implements Comparable <Order>{
+        int time;
+        int cost;
+
+        public Order(int t, int c){
+            time = t;
+            cost = c;
+        }
+
+        //PreCon: Order object, to sort order objects in ascending time
+        @Override
+        public int compareTo(Order o){
+            if(time > o.time){return 1;}
+            else if (time < o.time){return -1;}
+            else{
+                return 0;
+            }
+        }
+    }
+    
+    //PreCon: int time, int cost > 0
+    //Create order object and add it to the array
+    public void createOrder(int time, int cost){
+        Order o = new Order(time, cost);
+        arr.add(o);
+    }
+    
+    //PreCon: Every order is already added in the array and no more orders are added from here onwards
+    //Sorts the arraylist with order object in ascending time, note that the order of cost for orders 
+    //of the same time does not matter as the priority queue will handle the case. Then push each order
+    //into a stack, so the top of the stack has the order with the latest deadline. O(n)
+    public void sortAndPush(){
+        Collections.sort(arr);
+        for (int i = 0; i < arr.size(); i++){
+            stack.push(arr.get(i));    
+        }
+    }
+
+    //PreCon: Stack is ordered and filled with all the orders
+    //The function counts backwards in time as the latest order can be fulfilled at the latest time to maximize the time usage
+    //We start the timer at the latest order time, then we add all the orders with the same deadline into the priority queue,
+    //Note that orderInPQ object is created and added to the priority Queue, this is because we want the max heap of cost, so 
+    //another object is created with its own compareTo function to serve this purpose. Also note that the time is not a factor
+    //in the object, this is because we have startTime so that orders that have passed the deadline is not added, so time is already
+    //considered. 
+    public void findMax(){
+        Order o = stack.peek();
+        int startTime = o.time;
+        
+        long sum = 0;
+
+        while(startTime > 0){
+            //If the start time is equals to the orders in the stack, add all the orders of the same time
+            while(!stack.empty() && stack.peek().time == startTime){
+                OrderInPq oPQ = new OrderInPq(stack.pop().cost);
+                pQ.offer(oPQ);         
+            }
+            
+            //If priority queue is not empty, we take the highest cost and decrease the time by 1
+            if (!pQ.isEmpty()){
+                int intCost = pQ.poll().cost;
+                long longCost = intCost;
+                sum += longCost;
+                startTime--;
+            }
+            
+            //If priority queue and stack is empty we are done with all the orders
+            else if ( pQ.isEmpty()  && stack.empty()){
+                break;
+            }
+            //If Priority queue is empty, there are no orders to fulfill so we simply shift the time to when there are orders
+            else{
+                startTime = stack.peek().time;
+            }
+
+
+        }
+        System.out.println(sum);
+
+    }
+
+
+  public static void main(String args[]) {
+    
+      Kattio io = new Kattio(System.in, System.out);
+      int n = io.getInt();
+      Deliveries delivery = new Deliveries();
+      
+      for (int i = 0; i < n; i++){
+          int time = io.getInt();
+          int cost = io.getInt();
+          delivery.createOrder(time, cost);
+      }
+      delivery.sortAndPush();
+      delivery.findMax();
+
+  }
+}

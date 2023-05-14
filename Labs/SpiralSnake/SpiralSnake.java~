@@ -1,0 +1,142 @@
+/**
+ * Name: Darryl Chan
+ * Matric. No : A0177428U
+**/
+
+public class SpiralSnake {
+    
+    public static void printCoord(int x, int y, int steps){
+       // Kattio io = new Kattio(System.in);
+        System.out.println("Apple at (" + x + ", " + y + ") eaten at step " + steps);
+    }
+
+    public static int scanRight(char[][] arr, int row, int start, int end, int steps){
+        int newSteps = steps;
+        for (int i = start; i <= end; i++){
+           char charAt = arr[row][i];
+           if (charAt == '.'){
+               newSteps += 1;
+        }
+        else{
+            newSteps += 1;
+            printCoord(i,row,newSteps);
+        }  
+      }
+     // System.out.print("steps " + newSteps);
+      return newSteps;
+    }
+    
+    public static int scanDown(char[][] arr, int col, int start, int end, int steps){
+        int newSteps = steps;
+        for (int i = start; i <= end; i++){
+             char charAt = arr[i][col];
+             if (charAt == '.'){
+                 newSteps += 1;
+                 }
+             else{
+                  newSteps += 1;
+                  printCoord(col,i,newSteps);
+             }
+           }
+       // System.out.print("steps " + newSteps);
+        return newSteps;
+    }
+
+    public static int scanLeft(char[][] arr, int row, int start, int end, int steps){
+        int newSteps = steps;
+        for (int i = end; start <= i; i--){
+            char charAt = arr[row][i];
+            if (charAt == '.'){
+                 newSteps += 1;
+            }
+            else{
+                newSteps += 1;
+                printCoord(i,row,newSteps);
+            }
+        }
+       // System.out.print("steps " + newSteps);
+
+        return newSteps;
+    }
+    
+    public static int scanUp(char[][] arr, int col, int start, int end, int steps){
+        int newSteps = steps;
+        for (int i = end; start <= i; i--){
+             char charAt = arr[i][col];
+             if (charAt == '.'){
+                 newSteps += 1;
+                  }
+             else{
+                  newSteps += 1;
+                  printCoord(col,i,newSteps);
+             }
+        }
+       // System.out.print("steps " + newSteps);
+
+        return newSteps;
+    
+    }
+    
+    public static void spiralSnake(char[][] arr, int row, int col){
+        int steps = 0;
+        int colStart = 0;
+        int colEnd = col - 1;
+        int rowStart = 0;
+        int rowEnd = row - 1;
+        int counter = 0;
+        while (steps < (row*col)){
+            if (counter % 4 == 0){
+               steps =  scanRight(arr,rowStart,colStart, colEnd, steps);
+               rowStart += 1;
+            }
+            else if (counter % 4 == 1){
+                steps = scanDown(arr, colEnd, rowStart, rowEnd, steps);
+                colEnd -= 1;
+
+            }
+            else if (counter % 4 == 2){
+                steps = scanLeft(arr, rowEnd, colStart, colEnd, steps);
+                rowEnd -= 1;
+            }
+            else{
+                steps = scanUp(arr,colStart, rowStart, rowEnd, steps);
+                colStart += 1;
+            }
+            counter += 1;
+           // System.out.println("counter " + counter);
+           // System.out.println("steps" + steps);
+         }
+  }
+
+  public static void main(String args[]) {
+   /* String a = "..X..";
+    String b = ".X.X.";
+    String c = "...X.";
+    String d = ".X...";
+    char[][] abc = new char[4][4];
+    abc[0] = a.toCharArray();
+    abc[1] = b.toCharArray();
+    abc[2] = c.toCharArray();
+    abc[3] = d.toCharArray();
+    for ( int i = 0; i < 4; i++){
+        for(char cadc : abc[i]){
+            System.out.print(cadc);
+        }
+        System.out.println();
+    }
+   // scanRight(abc, 1, 0, 3, 0);
+   // scanLeft(abc,1, 0,3,0);
+   // scanDown(abc,1,0,3,0);
+   // scanUp(abc,1,0,3,0);
+   spiralSnake(abc,4,5);
+  */
+    Kattio io = new Kattio(System.in);
+    int row = io.getInt();
+    int col = io.getInt();
+    char[][] arr2d = new char[row][col];
+    for(int i = 0; i < row; i++){
+        arr2d[i] =io.getWord().toCharArray();
+    }
+    spiralSnake(arr2d, row,col);
+  }
+}

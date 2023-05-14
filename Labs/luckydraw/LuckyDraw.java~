@@ -1,0 +1,285 @@
+/**
+ * Name         : Darryl Chan
+ * Matric. No   : A0177482U
+*/
+
+import java.util.*;
+
+class Ball implements Comparable<Ball>{
+    long val;
+    long repeat = 1;
+
+    public Ball(long value){
+        val = value;
+    }
+
+    @Override
+    public int compareTo(Ball b){
+        if(val > b.val){return 1;}
+        else{return -1;}
+    }
+}
+
+class Difference implements Comparable<Difference>{
+    long diff;
+    long repeat = 1;
+
+    public Difference(long difference){
+        diff = difference;
+    }
+    
+    @Override
+    public int compareTo(Difference d){
+        if( diff > d.diff){return 1;}
+        else{return -1;}
+    }
+}
+
+
+
+public class LuckyDraw {
+    TreeMap<Long, Ball> ballMap = new TreeMap<Long, Ball>();
+
+    TreeMap<Long, Difference> diffMap = new TreeMap<Long, Difference>();
+
+    public void add2(long x, boolean call){
+        Ball find = ballMap.get(Long.valueOf(x));
+
+        if(find != null){
+            find.repeat++;
+            this.addInstanceDiff(0);
+        }
+        else{//No repeating balls
+            Long upper = ballMap.higherKey(Long.valueOf(x));
+            Long lower = ballMap.lowerKey(Long.valueOf(x));
+
+            if(upper == null && lower == null){
+                Ball ball = new Ball(x);
+                ballMap.put(Long.valueOf(x),ball);
+            }
+            else if (upper != null && lower != null){ //Slot in between numbers
+                Ball up = ballMap.get(upper);
+                Ball low = ballMap.get(lower);
+                
+                this.minusInstanceDiff(Math.abs(up.val - low.val));
+
+                this.addInstanceDiff(Math.abs(up.val-x));
+                this.addInstanceDiff(Math.abs(x-low.val));
+
+                Ball ball = new Ball(x);
+                ballMap.put(Long.valueOf(x),ball);
+            }
+            else if (upper != null){// there is upper
+                Ball up = ballMap.get(upper);
+
+                this.addInstanceDiff(Math.abs(up.val - x));
+
+                Ball ball = new Ball(x);
+                ballMap.put(Long.valueOf(x),ball);
+            }
+
+            else{ // There is lower only
+                Ball low = ballMap.get(lower);
+
+                this.addInstanceDiff(Math.abs(x - low.val));
+
+                Ball ball = new Ball(x);
+                ballMap.put(Long.valueOf(x),ball);
+            }
+        }
+        if (diffMap.size() != 0 && call){
+            Long lowest = diffMap.firstKey();
+            System.out.println(lowest.longValue());
+        }
+    }
+        
+
+    public void remove2(long x){
+        Ball find = ballMap.get(Long.valueOf(x));
+
+        if (find.repeat > 1){
+            find.repeat--;
+            this.minusInstanceDiff(0);
+        }
+        else{
+            Long upper = ballMap.higherKey(Long.valueOf(x));
+            Long lower = ballMap.lowerKey(Long.valueOf(x));
+
+            if (upper != null && lower != null){
+                Ball up = ballMap.get(upper);
+                Ball low = ballMap.get(lower);
+                
+                this.minusInstanceDiff(Math.abs(up.val - x));
+                this.minusInstanceDiff(Math.abs(x - low.val));
+
+                this.addInstanceDiff(Math.abs(up.val-low.val));
+
+                ballMap.remove(Long.valueOf(x));
+            }
+            else if( upper != null){
+                Ball up = ballMap.get(upper);
+                this.minusInstanceDiff(Math.abs(up.val - x));
+            }
+            else{
+                Ball low = ballMap.get(lower);
+                this.minusInstanceDiff(Math.abs(x - low.val));
+            }
+        }
+
+        if (diffMap.size() != 0){
+            Long lowest = diffMap.firstKey();
+            System.out.println(lowest.longValue());
+        }
+    }    
+    
+
+
+
+    public void add(long x, boolean call){
+        if(ballMap.size() == 0){//Is empty so just add
+            Ball ball = new Ball(x);
+            ballMap.put(Long.valueOf(x),ball);
+        }
+        else{
+
+            Ball find = ballMap.get(Long.valueOf(x));
+            if(find != null){;find.repeat++; this.addInstanceDiff(0);}
+
+            else{// Is empty so create and put in between
+
+                Long lowerKey = ballMap.lowerKey(Long.valueOf(x));
+                Long upperKey = ballMap.higherKey(Long.valueOf(x));
+
+                if ( lowerKey!= null && upperKey != null){
+                    Ball lower = ballMap.get(lowerKey);
+                    Ball upper = ballMap.get(upperKey);
+
+                    long diff = Math.abs(upper.val - lower.val);
+                    this.minusInstanceDiff(diff);//to Create
+
+                    long diff1 = Math.abs(upper.val - x);
+                    long diff2 = Math.abs(x - lower.val);
+
+                    this.addInstanceDiff(diff1);
+                    this.addInstanceDiff(diff2);
+                
+                    Ball ball = new Ball(x);   
+                    ballMap.put(Long.valueOf(x),ball);
+                
+                    
+
+                }
+                else if ( lowerKey != null){ // lower is not null
+                    Ball lower = ballMap.get(lowerKey);
+
+                    long diff1 = Math.abs(x - lower.val);
+                    this.addInstanceDiff(diff1);
+
+                
+                    Ball ball = new Ball(x);
+                    ballMap.put(Long.valueOf(x),ball);
+                
+                }
+
+                else{// upper is not null
+                    Ball upper = ballMap.get(upperKey);
+
+                    long diff1 = Math.abs(upper.val - x);
+                    this.addInstanceDiff(diff1);
+                
+                    Ball ball = new Ball(x);
+                    ballMap.put(Long.valueOf(x),ball);
+                
+                }
+            }
+              
+        }
+        if( diffMap.size() != 0 && call){
+            Long lowest = diffMap.firstKey();
+            System.out.println(lowest.longValue());
+        }
+        //Long lowest = diffMap.firstKey();
+        //if (call && diffMap.size() != 0){System.out.println(lowest.longValue());}
+        }
+
+
+    public void addInstanceDiff(long x){
+        //System.out.println("add: " + x);
+        Difference value = diffMap.get(Long.valueOf(x));
+        if(value == null){
+            Difference diff = new Difference(x);
+            diffMap.put(Long.valueOf(x),diff);
+        }
+        else{
+            value.repeat++;
+        }
+        //System.out.println("diff add: " + x);
+    }
+
+    public void minusInstanceDiff(long x){
+        //System.out.println("remove: " + x);
+        Difference value = diffMap.get(Long.valueOf(x));
+
+        if( value.repeat == 1){
+            diffMap.remove(Long.valueOf(x));
+        }
+        else{
+            value.repeat--;
+        }
+    }
+
+    public void remove(long x){
+        Ball findBall = ballMap.get(Long.valueOf(x));
+        if(findBall.repeat > 1){
+            findBall.repeat--;
+            this.minusInstanceDiff(0);
+        }
+        else{
+             Long lowerKey = ballMap.lowerKey(Long.valueOf(x));
+             Long upperKey = ballMap.higherKey(Long.valueOf(x));
+
+             if( lowerKey != null && upperKey != null){
+                 Ball lower = ballMap.get(lowerKey);
+                 Ball upper = ballMap.get(upperKey);
+
+                 this.minusInstanceDiff(Math.abs(x - lower.val));
+                 this.minusInstanceDiff(Math.abs(upper.val - x));
+
+                 this.addInstanceDiff(Math.abs(upper.val - lower.val));
+
+                 ballMap.remove(Long.valueOf(x));
+             }
+        }
+        Long lowest = diffMap.firstKey();
+        System.out.println(lowest.longValue());
+    }
+ 
+    public static void main(String args[]) {
+        LuckyDraw runner = new LuckyDraw();
+        Kattio io = new Kattio(System.in, System.out);
+        int n = io.getInt();
+
+        for (int i = 0; i < n; i++){
+            runner.add2(io.getLong(),false);
+        }
+
+        int q = io.getInt();
+
+        for (int i = 0; i < q; i++){
+            String com = io.getWord();
+
+            if (com.equals("ADD")){
+                long x = io.getLong();
+                //System.out.println(x);
+                runner.add2(x,true);
+               
+          }
+
+          else{
+              runner.remove2(io.getLong());
+          }
+      }
+
+  }
+}
+

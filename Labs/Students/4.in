@@ -1,0 +1,22 @@
+10 11
+EXG s
+RPo ?
+nlN s
+tcp s
+ESt ?
+fRe s
+GFC n
+SKn ?
+AOR ?
+tMt s
+GFC -> tMt
+RPo -> tcp
+ESt -> tMt
+GFC -> SKn
+ESt -> SKn
+EXG -> SKn
+AOR -> tMt
+RPo -> AOR
+nlN -> tcp
+tcp -> GFC
+fRe -> AOR

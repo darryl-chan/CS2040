@@ -1,0 +1,41 @@
+40
+pfront 8
+get 1
+pfront 16
+pback -1
+get 2
+pfront -3
+get 1
+pback 5
+pback 18
+dfront
+pback 1
+pback -18
+get 3
+cal
+dback
+pfront 6
+pfront -9
+pback 9
+pfront -4
+pfront -1
+pback 20
+pback 9
+cal
+pback -20
+pfront 9
+pfront 14
+cal
+dfront
+pfront -16
+pfront -11
+pback 7
+pfront 10
+pfront -3
+pback -15
+get 20
+get 14
+pfront -12
+pfront -10
+pfront -18
+get 20
